@@ -21,5 +21,5 @@ const query = (text, params) => pool.query(text, params)
 app.get("/users/:username/:password/:postoffice", async(req, res) => {
     let { username, password, postoffice } = req.params
     postoffice_id = query("SELECT * FROM postofficeuser WHERE postofficename = $1;", [postoffice]).row[0].user_id
-    query("SELECT * FROM deliveruser WHERE postoffice_id = $1 AND username = $2 AND password = $3;")
+    query("SELECT * FROM deliveruser WHERE postoffice_id = $1 AND username = $2 AND password = $3;", [postoffice_id, username, password])
 })
