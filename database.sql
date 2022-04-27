@@ -28,4 +28,7 @@ CREATE TABLE ordereruser (
     postoffice_id: INT, 
     username: VARCHAR(40),
     password: VARCHAR(40),
+    location: VARCHAR(75),
+    houselocationlong: FLOAT,
+    houselocationlat: FLOAT
 )
