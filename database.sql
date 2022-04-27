@@ -8,7 +8,7 @@ CREATE TABLE postofficeuser (
 CREATE TABLE paperprice (
     postoffice_id: INT,
     papername: VARCHAR(40),
-    paperprice: FLOAT(100),
+    paperprice: FLOAT(20),
 )
 
 CREATE TABLE deliveruser (
@@ -20,8 +20,8 @@ CREATE TABLE deliveruser (
 
 CREATE TABLE papertodeliver (
     papername: VARCHAR(40),
-    houselocationlong: FLOAT,
-    houselocationlat: FLOAT
+    houselocationlong: FLOAT(20),
+    houselocationlat: FLOAT(20)
 )
 
 CREATE TABLE ordereruser (
@@ -29,6 +29,6 @@ CREATE TABLE ordereruser (
     username: VARCHAR(40),
     password: VARCHAR(40),
     location: VARCHAR(75),
-    houselocationlong: FLOAT,
-    houselocationlat: FLOAT
+    houselocationlong: FLOAT(20),
+    houselocationlat: FLOAT(20)
 )
