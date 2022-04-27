@@ -18,6 +18,6 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params)
 
-app.get("/users", async(req, res) => {
+app.get("/users/:username/:password", async(req, res) => {
     
 })
