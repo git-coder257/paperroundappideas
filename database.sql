@@ -8,7 +8,7 @@ CREATE TABLE postofficeuser (
 CREATE TABLE paperprice (
     postoffice_id: INT,
     papername: VARCHAR(40),
-    paperprice: FLOAT,
+    paperprice: FLOAT(100),
 )
 
 CREATE TABLE deliveruser (
