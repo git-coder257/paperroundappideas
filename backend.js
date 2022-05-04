@@ -312,6 +312,25 @@ app.get("/getallpapers/:username/:password", async (req, res) => {
   }
 })
 
+app.post("/addpaper/:username/:password/:papername", async (req, res) => {
+  try {
+    
+    let { username, password, papername } = req.params
+    
+    let ordererid = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0].id
+    
+    await client.query("INSERT INTO pap")
+    
+    res.json({
+      success: true
+    })
+  } catch (error){
+    res.json({
+      success: false
+    })
+  }
+}
+
 // CREATE TABLE ordereruser (postoffice_id INT, username VARCHAR(40), password VARCHAR(40), location VARCHAR(75), houselocationlong FLOAT(20), houselocationlat FLOAT(20), id SERIAL PRIMARY KEY);
 
 app.listen(PORT)
