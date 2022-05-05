@@ -335,6 +335,10 @@ app.put("/adddeliverusertopaper/:username/:postofficename", (req, res) => {
     try {
 
         let { username, postofficename } = req.params
+        
+        let ordererid = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0].id
+
+        client.query("UPDATE papertodeliver SET deliver_id)
 
         res.json({
             success: true
