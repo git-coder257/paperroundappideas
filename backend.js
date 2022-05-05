@@ -331,6 +331,21 @@ app.post("/addpaper/:username/:password/:papername", async (req, res) => {
   }
 }
 
+app.put("/adddeliverusertopaper/:username/:postofficename", (req, res) => {
+    try {
+
+        let { username, postofficename } = req.params
+
+        res.json({
+            success: true
+        })
+    } catch (error){
+        res.json({
+            success: false 
+        })
+    }
+})
+
 // CREATE TABLE ordereruser (postoffice_id INT, username VARCHAR(40), password VARCHAR(40), location VARCHAR(75), houselocationlong FLOAT(20), houselocationlat FLOAT(20), id SERIAL PRIMARY KEY);
 
 app.listen(PORT)
