@@ -272,33 +272,15 @@ app.get("/deliveruser/:username/:password", async (req, res) => {
   }
 })
 
-app.post("/newpaper/:username/:password/:postofficename/:papername/:locationlat/:locationlong", async (req, res) => {
-  try {
-    let { username, password, postofficename, papername, locationlat, locationlong } = req.params
-
-    let postofficeid = await (await client.query("SELECT * FROM postofficeuser WHERE postofficename = $1;", [postofficename])).rows[0].user_id
-
-    let ordererid = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0].id
-
-    client.query("INSERT INTO papertodeliver (houselocationlat, houselocationlong, papername, postoffice_id, ordereruser_id, deliver_id) VALUES ($1, $2, $3, $4, $5, $6);", [locationlat, locationlong, papername, postofficeid, ordererid, 0])
-
-    res.json({
-      success: true
-    })
-  } catch (error) {
-    res.json({
-      success: false
-    })
-  }
-})
-
 app.get("/getallpapers/:username/:password", async (req, res) => {
   try {
     let { username, password } = req.params
 
     let ordererid = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0].id
 
-    let papers = await (await client.query("SELECT * FROM ordereruser WHERE ordereruser_id = $1;", [ordererid])).rows
+    console.log(ordererid)
+
+    let papers = await (await client.query("SELECT * FROM papertodeliver WHERE ordereruser_id = $1;", [ordererid])).rows
 
     res.json({
       papers: papers,
@@ -317,37 +299,85 @@ app.post("/addpaper/:username/:password/:papername", async (req, res) => {
     
     let { username, password, papername } = req.params
     
-    let ordererid = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0].id
+    console.log(await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0])
     
-    await client.query("INSERT INTO pap")
+    let ordereraccount = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0]
+
+    await client.query("INSERT INTO papertodeliver (houselocationlat, houselocationlong, location, ordereruser_id, papername, postoffice_id, deliver_id, cancelpaper) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);", [
+      ordereraccount.houselocationlat,
+      ordereraccount.houselocationlong,
+      ordereraccount.location,
+      ordereraccount.id,
+      papername,
+      ordereraccount.postoffice_id,
+      0,
+      false
+    ])
     
     res.json({
       success: true
     })
   } catch (error){
+
+    console.log(error)
+
     res.json({
       success: false
     })
   }
-}
+})
 
-app.put("/adddeliverusertopaper/:username/:postofficename", (req, res) => {
-    try {
+app.put("/changepaperstatus/:username/:password/:papername", async (req, res) => {
+  try {
+    
+    let { username, password, papername } = req.params
 
-        let { username, postofficename } = req.params
-        
-        let ordererid = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0].id
+    let { postoffice_id, id } = await (await client.query("SELECT * FROM ordereruser WHERE username = $1 AND password = $2;", [username, password])).rows[0]
 
-        client.query("UPDATE papertodeliver SET deliver_id)
+    console.log(await (await client.query("SELECT * FROM papertodeliver WHERE ordereruser_id = $1;", [id])).rows[0])
 
-        res.json({
-            success: true
-        })
-    } catch (error){
-        res.json({
-            success: false 
-        })
-    }
+    let ispapercencel = await (await client.query("SELECT * FROM papertodeliver WHERE ordereruser_id = $1 AND papername = $2;", [id, papername])).rows[0].cancelpaper
+
+    // if (ispapercencel){
+    client.query("UPDATE papertodeliver SET cancelpaper = $1 WHERE ordereruser_id = $2 AND papername = $3;", [
+      !ispapercencel,
+      id,
+      papername
+      ]) 
+    // }
+
+    res.json({
+      success: true
+    })
+  } catch (error) {
+    res.json({
+      success: false
+    })
+  }
+})
+
+app.put("/adddeliverusertopaper/:username/:postofficename", async (req, res) => {
+  try {
+
+      let { username, postofficename } = req.params
+      
+      let deliverid = await (await client.query("SELECT * FROM deliveruser WHERE username = $1;", [username])).rows[0].user_id
+
+      let postofficeid = await (await client.query("SELECT * FROM postofficeuser WHERE postofficename = $1;")).rows[0].user_id
+
+      client.query("UPDATE papertodeliver SET deliver_id = $1 WHERE postoffice_id = $2;", [
+        deliverid,
+        postofficeid
+      ])
+
+      res.json({
+          success: true
+      })
+  } catch (error){
+      res.json({
+          success: false 
+      })
+  }
 })
 
 // CREATE TABLE ordereruser (postoffice_id INT, username VARCHAR(40), password VARCHAR(40), location VARCHAR(75), houselocationlong FLOAT(20), houselocationlat FLOAT(20), id SERIAL PRIMARY KEY);
