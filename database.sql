@@ -6,6 +6,10 @@ CREATE TABLE deliveruser (user_id SERIAL PRIMARY KEY, postoffice_id INT, usernam
 
 CREATE TABLE district (postofficeuser_id INT, districtname VARCHAR(65));
 
-CREATE TABLE papertodeliver (postoffice_id INT, ordereruser_id INT, papername VARCHAR(40), houselocationlong FLOAT(20), houselocationlat: FLOAT(20), deliver_id : INT);
+CREATE TABLE papertodeliver (paper_id SERIAL PRIMARY KEY,postoffice_id INT, ordereruser_id INT, papername VARCHAR(40), location VARCHAR(75), houselocationlong FLOAT(20), houselocationlat FLOAT(20), deliver_id INT, cancelpaper BOOLEAN);
 
-CREATE TABLE ordereruser (postoffice_id INT, username VARCHAR(40), password VARCHAR(40), location VARCHAR(75), houselocationlong FLOAT(20), houselocationlat FLOAT(20), id SERIAL PRIMARY KEY);
+CREATE TABLE ordereruser (postoffice_id INT, username VARCHAR(40), password VARCHAR(40), location VARCHAR(75), houselocationlong FLOAT(20), houselocationlat FLOAT(20), id SERIAL PRIMARY KEY)
+
+CREATE TABLE daystodeliver (paper_id INT, day VARCHAR(20));
+
+CREATE TABLE dayspapercanbedelivered (postoffice_id INT, papername: VARCHAR(40), day: VARCHAR(20));
