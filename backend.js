@@ -543,6 +543,24 @@ app.post("/adddayforpaper/:papername/:day/:postofficename", async (req, res) => 
   }
 })
 
+app.get("/getallpaperdays/:postofficename/:username", async (req, res) => {
+  
+  try {
+    
+     let ordereruser = await (await client.query("SELECT * FROM ordereruser WHERE username = $1;")).rows[0]
+    
+     let dayspapercanbedelivered = await (await client.query("SELECT * FROM dayspapercanbedelivered WHERE postoffice_id = $1;", [ordereruser.postoffice_id]))
+     
+    res.json({
+      success: true
+    })
+  } catch (error){
+    res.json({
+      success: false
+    })
+  }
+})
+
 // CREATE TABLE ordereruser (postoffice_id INT, username VARCHAR(40), password VARCHAR(40), location VARCHAR(75), houselocationlong FLOAT(20), houselocationlat FLOAT(20), id SERIAL PRIMARY KEY);
 
 app.listen(PORT, () => {
